@@ -28,7 +28,7 @@ urlpatterns = [
     path('user/<int:pk>/', login_required(UserDetailView.as_view())),
     path('user/edit/<int:pk>/', ProfileEdit.as_view()),
     path('answer/delete/<int:pk>/', DeleteAnswer.as_view()),
-    # path('password/',change_password),
+    path('password/',change_password),
 
 
 

@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from .models import *
+from django.contrib.auth import authenticate
 
 '''All the forms required in the website.
    Instance of each class is a new django form.
@@ -22,23 +23,6 @@ class PasswordChangeForm(forms.Form):
     current_password = forms.CharField(widget = forms.PasswordInput())
     password1 = forms.CharField(widget = forms.PasswordInput())
     password2 = forms.CharField(widget = forms.PasswordInput())
-
-    def clean(self):
-        # Dictionary containing all of the data of the form.
-        cleaned_data = super().clean()
-
-        username = cleaned_data['username']
-        password1 = cleaned_data['password1']
-        password2 = cleaned_data['password2']
-        current_password = cleaned_data['current_password']
-
-        # Checks the equality of the new password in both password fields
-        if password1 != password2:
-            raise forms.ValidationError('Please Enter Same Passwords')
-        user = authenticate(username, current_password)
-        if not user:
-            raise forms.ValidationError('Incorrect Current Password')
-
 
 
 class ProfileForm(forms.ModelForm):

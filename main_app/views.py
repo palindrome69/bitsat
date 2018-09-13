@@ -4,12 +4,14 @@ from django.views.generic import (ListView, DetailView, CreateView,
                                   UpdateView, DeleteView)
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from main_app.forms import QuestionForm, UserForm, ProfileForm,PasswordChangeForm
 from main_app.models import Profile, Question, Answer, Vote, Notification
+from django import forms
 
 ''' ALL VIEWS TO THIS APP ARE DEFINED HERE.
 
@@ -387,21 +389,58 @@ def vote(request, **kwargs):
     last_page = request.META.get('HTTP_REFERER')
     return redirect(last_page)
 
-# TODO: **IMPLEMENT CHANGE PASSWORD**
-# @login_required
-# def change_password(request):
-#     if request.method == 'GET':
-#         return render(request, 'main_app/password_change.html',
-#                       context={'form':PasswordChangeForm()})
-#     else:
-#         new_form = PasswordChangeForm(data = request.POST)
-#         if new_form.is_valid:
-#             password = request.POST.get('password1')
-#             user = request.user
-#             print("YAYAY")
-#             user.set_password(password)
-#             user.save()
-#             return reverse('home')
+
+def change_password(request):
+    '''Changes password of the logged in user.
+       
+       Displays the form on a 'GET' request and changes the password on a POST request.
+       Redirects to the 'main_app/home' if successfully changed.
+       Also logs out of all sessions other than current session.
+
+    '''   
+    if request.method == 'GET':
+        # Displays the form
+        return render(request, 'main_app/password_change.html',
+                      context={'form':PasswordChangeForm()})
+
+    else:
+
+        # password 1 and password 2 are fields for new password and its confirmation
+        password1 = request.POST.get('password1')
+        password2 = request.POST.get('password2')
+
+        # username of the logged in user
+        username = request.user.username
+
+        # current password for the user
+        current_password = request.POST.get('current_password')
+
+        # Checks the equality of the new password in both password fields
+        if password1 != password2:
+            print("passwords don't match")
+            return redirect('/main_app/password')
+        else:
+            pass    
+
+        # checks if the current password entered is correct.
+        # Returns a user object if correct else None
+        user = authenticate(request, username = username, password = current_password)
+
+        if not user:
+            print('Incorrect Password')
+            return redirect('/main_app/password')
+        else:
+            pass    
+
+        # Sets new password for the logged in users
+        user = request.user    
+        user.set_password(password1)
+        user.save()
+
+        # logs in for current session as password is changed
+        login(request, user)
+
+        return redirect('/main_app/home')
 
 class Logout(LogoutView):
     # Redirects to this url after successfully logged out
