@@ -1,0 +1,57 @@
+{% load humanize %}
+{% load bootstrap4 %}
+{% load extras %}
+
+<div class="container container">
+
+      <div class="card card-with-shadow">
+         <div class="card-header">
+            {% if question.author.user == user %}
+            <button type="button" class="close"  href = "/main_app/question/delete/{{question.pk}}" aria-label="Close">
+            <span aria-hidden="true"><a href = "/main_app/question/delete/{{question.pk}}/">&times;</a></span>
+            </button>
+            {% endif %}
+            <a class="text text-info font-weight-bold" href="/main_app/user/{{question.author.id}}/"> {{ question.author.user.first_name }} {{ question.author.user.last_name }}
+            </a>
+
+         </div>
+         <div class="card-body">
+            <h4 class="card-title">
+               <a href="/main_app/question/{{question.id}}">
+                  <p class="text-dark"> Q : {{ question.question }}</p>
+               </a>
+            </h4>
+            <h5 class="text text-muted">A : {{question | first_answer }}</h5>
+            {% if  question|check_voted:user  %}
+            {% if question|opp_vote:user == 'Upvote' %}
+            <a class="btn btn-success" href="/main_app/question/{{question|opp_vote:user}}/{{question.id}}/">{{question|opp_vote:user}}</a>
+            {% else %}
+            <a class="btn btn-danger" href="/main_app/question/{{question|opp_vote:user}}/{{question.id}}/">{{question|opp_vote:user}}</a>
+            {% endif %}
+            {% else %}
+            <a class="btn btn-success" href="/main_app/question/Upvote/{{question.id}}/">Up Vote</a>
+            <a class="btn btn-danger" href="/main_app/question/Downvote/{{question.id}}/">Down Vote</a>
+            {% endif %}
+            {% if question|check_following:user %}
+            <a class="btn btn-dark"  href="/main_app/unfollow/{{question.id}}/">Unfollow</a>
+            {% else %}
+            <a class="btn btn-dark"  href="/main_app/follow/{{question.id}}/">Follow</a>
+            {% endif %}
+         </div>
+         <div class="card-footer text-muted">
+            <div class="row">
+               <div class="col">
+                  {{question.pub_date | naturaltime}}
+               </div>
+               <div class="col-l text-dark">
+                  {{question.answers.all | length}} Answers |
+                  {{question | vote_count }}
+               </div>
+            </div>
+         </div>
+      </div>
+
+   <div class="container">
+      <p>  </p>
+   </div>
+</div>

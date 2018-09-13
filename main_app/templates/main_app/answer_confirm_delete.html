@@ -1,0 +1,21 @@
+{% extends "main_app/main_app_base.html" %}
+
+{% block body_block %}
+
+<div class="container">
+  <div class="jumbotron">
+    <h4 class="display-4"> Delete Answer?</h4>
+  </div>
+  <h5>{{answer.answer}}</h5>
+
+  <form class="form" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <input class="btn btn-danger" type="submit" name="" value="Delete">
+      <a href="/main_app/question/{{answer.question.id}}"> <button type="button" class="btn btn-success" name="button">Fuck, Go Back</button> </a>
+    </div>
+  </form>
+
+</div>
+
+{% endblock %}

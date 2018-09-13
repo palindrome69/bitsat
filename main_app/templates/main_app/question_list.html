@@ -1,0 +1,115 @@
+{% extends 'main_app/main_app_base.html' %}
+{% load humanize %}
+{% load bootstrap4 %}
+{% load extras %}
+{% block body_block %}
+
+<div class="container">
+   <p>  </p>
+</div>
+<div class="container">
+   <ul class="nav nav-pills mb-3" id="myTab" role="tablist">
+      <li class="nav-item">
+         <a class="nav-link active" id="allquestions-tab" data-toggle="tab" href="#allquestions" role="tab" aria-controls="home" aria-selected="true">Popular  <span class="badge badge-light">{{question_list | length}}</span></a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" id="myquestions-tab" data-toggle="tab" href="#myquestions" role="tab" aria-controls="profile" aria-selected="false">My Questions <span class="badge badge-light">{{userquestions | length}} </a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" id="newquestions-tab" data-toggle="tab" href="#newquestions" role="tab" aria-controls="home" aria-selected="true">New Questions <span class="badge badge-light">{{question_list | length}}</span></a>
+      </li>
+
+      <li class="nav-item">
+         <a class="nav-link" id="upquestions-tab" data-toggle="tab" href="#upquestions" role="tab" aria-controls="home" aria-selected="true">Up Voted  <span class="badge badge-light">{{question_list | upvoted_questions:user | length}}</span></a>
+      </li>
+
+      <li class="nav-item">
+         <a class="nav-link" id="fquestions-tab" data-toggle="tab" href="#fquestions" role="tab" aria-controls="home" aria-selected="true">Following  <span class="badge badge-light">{{question_list | following_questions:user | length}}</span></a>
+      </li>
+
+   </ul>
+</div>
+<div class="container">
+   <p> </p>
+</div>
+
+<!-- *** ASK QUESTIONS *** -->
+
+<div class="container container">
+   <div class="card" >
+      <div class="card-header">
+         <a href="#">{{ user.first_name }} {{ user.last_name }}</a>
+      </div>
+      <div class="card-body">
+         <h5>Ask a Question :</h5>
+         <form class="form " action=""method="post">
+            {% csrf_token %}
+            {% bootstrap_form question_form %}
+            <input type="submit" class="btn btn-success" name="Submit" value="Submit">
+         </form>
+      </div>
+   </div>
+</div>
+<div class="tab-content" id="myTabContent">
+
+<!-- *** POPULAR QUESTIONS TAB *** -->
+
+   <div class="tab-pane fade show active" id="allquestions" role="tabpanel" aria-labelledby="home-tab">
+      <div class="container">
+         <p>  </p>
+      </div>
+      {% for question in question_list|order_by_votes %}
+      {% include "main_app/_questions.html" %}
+      {% endfor %}
+   </div>
+
+<!-- ***MY QUESTIONS TAB *** -->
+
+   <div class="tab-pane fade" id="myquestions" role="tabpanel" aria-labelledby="profile-tab">
+
+         <div class="container">
+            <p>  </p>
+         </div>
+         {% for question in userquestions %}
+         {% include "main_app/_questions.html" %}
+         {% endfor %}
+   </div>
+
+<!-- *** NEW QUESTIONS TAB *** -->
+
+   <div class="tab-pane fade " id="newquestions" role="tabpanel" aria-labelledby="home-tab">
+      <div class="container">
+         <p>  </p>
+      </div>
+      {% for question in question_list %}
+      {% include "main_app/_questions.html" %}
+      {% endfor %}
+   </div>
+
+<!-- *** Followed Questions *** -->
+
+   <div class="tab-pane fade" id="fquestions" role="tabpanel" aria-labelledby="profile-tab">
+
+         <div class="container">
+            <p>  </p>
+         </div>
+         {% for question in question_list|following_questions:user %}
+         {% include "main_app/_questions.html" %}
+         {% endfor %}
+
+   </div>
+
+<!-- *** Upvoted Questions *** -->
+
+   <div class="tab-pane fade" id="upquestions" role="tabpanel" aria-labelledby="profile-tab">
+
+         <div class="container">
+            <p>  </p>
+         </div>
+         {% for question in question_list|upvoted_questions:user %}
+         {% include "main_app/_questions.html" %}
+         {% endfor %}
+   </div>
+
+</div>
+{% endblock %}

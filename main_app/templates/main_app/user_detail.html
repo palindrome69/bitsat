@@ -1,0 +1,89 @@
+{% extends "main_app/main_app_base.html" %}
+{% load humanize %}
+{% load extras %}
+{% block body_block %}
+<div class="container">
+<div class="row">
+<div class="col-sm-5">
+   <p>
+   </p>
+   <div class="card" style="width: 25rem;">
+      <div class="card-body">
+         <h5 class="card-title">{{profile.user.first_name}} {{profile.user.last_name}} ({{profile.user_type | title}})</h5>
+         <h6 class="card-subtitle mb-2 text-muted">@{{profile.user.username}}</h6>
+         <p class="card-text text-muted">{{profile.bio}}</p>
+         {% if user == profile.user %}
+         <p class="text-center"> <a href="/main_app/user/edit/{{profile.user.id}}" class="card-link">Edit profile</a></p>
+         {% endif %}
+      </div>
+   </div>
+</div>
+<div class="col-sm-5">
+<p>  </p>
+<div class="container container-fluid">
+   <ul class="nav nav-pills mb-3" id="myTab" role="tablist">
+      <li class="nav-item">
+         <a class="nav-link active" id="allquestions-tab" data-toggle="tab" href="#allquestions" role="tab" aria-controls="home" aria-selected="true">All Questions  <span class="badge badge-light">{{profile.questions.all | length}}</span></a>
+      </li>
+   </ul>
+</div>
+{% for question in profile.questions.all %}
+<div class="container ">
+   <div class="shadow bg-white rounded" style="width: 40rem">
+      <div class="card" style="width: 40rem;">
+         <div class="card-header">
+            {% if question.author.user == user %}
+            <button type="button" class="close"  href = "/main_app/question/delete/{{question.pk}}" aria-label="Close">
+            <span aria-hidden="true"><a href = "/main_app/question/delete/{{question.pk}}/">&times;</a></span>
+            </button>
+            {% endif %}
+            <a class="text text-info font-weight-bold" data-toggle="collapse" href="#{{question.pk}}" role="button" aria-expanded="false" aria-controls="{{question.pk}}"> {{ question.author.user.first_name }} {{ question.author.user.last_name }}</a>
+         </div>
+         <div class="collapse" id="{{question.pk}}">
+            <div class="collapse show">
+              {% for users in user_list%}
+              {% if users.user.username == question.author.user.username %}
+              <p class="text text-muted"> {{question.author.user_type | title }} <a href="/main_app/user/{{question.author.user.id}}"> See Profile </a></p>
+              {% endif %}
+              {% endfor %}
+            </div>
+         </div>
+         <div class="card-body">
+           <h4 class="card-title">
+              <a href="/main_app/question/{{question.id}}">
+                 <p class="text-dark">Q : {{ question.question }}</p>
+              </a>
+           </h4>
+           {% if  question|check_voted:user  %}
+           {% if question|opp_vote:user == 'Upvote' %}
+           <a class="btn btn-success" href="/main_app/question/{{question|opp_vote:user}}/{{question.id}}/">{{question|opp_vote:user}}</a>
+           {% else %}
+           <a class="btn btn-danger" href="/main_app/question/{{question|opp_vote:user}}/{{question.id}}/">{{question|opp_vote:user}}</a>
+           {% endif %}
+           {% else %}
+           <a class="btn btn-success" href="/main_app/question/Upvote/{{question.id}}/">Up Vote</a>
+           <a class="btn btn-danger" href="/main_app/question/Downvote/{{question.id}}/">Down Vote</a>
+           {% endif %}
+           {% if question|check_following:user %}
+           <a class="btn btn-dark"  href="/main_app/unfollow/{{question.id}}/">Unfollow</a>
+           {% else %}
+           <a class="btn btn-dark"  href="/main_app/follow/{{question.id}}/">Follow</a>
+           {% endif %}
+         </div>
+         <div class="card-footer text-muted">
+           <div class="row">
+              <div class="col">
+                 {{question.pub_date | naturaltime}}
+              </div>
+              <div class="col-l text-dark">
+                 {{question.answers.all | length}} Answer(s) |
+                 {{question | vote_count }}
+              </div>
+           </div>
+         </div>
+      </div>
+   </div>
+</div>
+<p>  </p>
+{% endfor %}
+{% endblock %}

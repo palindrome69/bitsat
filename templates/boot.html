@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+{% load staticfiles %}
+{% load bootstrap4 %}
+<html lang="en" dir="ltr">
+  <head>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <title></title>
+  </head>
+  <body>
+    {% if verified%}
+    <div class="alert alert-danger" role="alert">
+      Please enter valid details
+    </div>
+{% endif%}
+    <div class="container">
+    <div class="jumbotron">
+      <h1>Welcome to BITSAT Queries!</h1>
+        <form method="post" >
+         {% csrf_token %}
+         {% bootstrap_form form %}
+          <input type="submit" name="" class="btn btn-secondary" value="Log In">
+        </form>
+        <small class="text-muted">Don't have an account? <a href="{% url 'register' %}">Regitser Here.</a></small>
+
+    </div>
+    </div>
+    <div class="text-center">
+  <a href ="http://www.bits-pilani.ac.in/index.aspx"><img src='{% static 'main_app/bitslogo.jpg' %}' class="rounded" alt="HEY"></a>
+</div>
+
+<div class="container">
+<div class="jumbotron">
+  <dl class="row">
+  <dt class="col-sm-3">Previous year cut-offs</dt>
+  <dd class="col-sm-9"> <a href="https://engineering.careers360.com/articles/bitsat-cutoff">Check here</a></dd>
+
+  <dt class="col-sm-3">Important Links</dt>
+  <dd class="col-sm-9">
+     <p><a href="http://www.bits-pilani.ac.in/Pilani/index.aspx">Pilani</a>
+     <a href="http://www.bits-pilani.ac.in/Goa/index.aspx">Goa</a>
+     <a href="http://www.bits-pilani.ac.in/Hyderabad/index.aspx">Hyderabad</a>
+     <a href="http://www.bits-pilani.ac.in/Dubai/index.aspx">Dubai</a> </p>
+  </dd>
+
+  <dt class="col-sm-3">FAQs</dt>
+  <dd class="col-sm-8"><p>If Fee is an issue, Don't come here! (<a href="https://www.google.co.in/search?ei=0gg5W5bvCYfavATYqZGYCA&q=%23rollbackbitspilanifeehike&oq=%23rollbackbitspilanifeehike&gs_l=psy-ab.3...6880.10598.0.10785.14.13.0.0.0.0.297.938.0j1j3.4.0....0...1.1.64.psy-ab..11.0.0....0.v6_Zgt9oHTg">#RollBackBITSPilaniFeeHike</a>)</p>
+       <p>Yes, it's hard to get a vertical transfer. (CG required > 9.5)</p>
+  </dd>
+
+
+</dl>
+</div>
+</div>
+  </body>
+</html>
