@@ -42,8 +42,10 @@ class DeleteAnswer(DeleteView):
     '''
     model = Answer
     def get_success_url(self):
+        
         # ID of the question whose answer is deleted
         question_id = self.object.question.id
+
         # returns to that question's detail view
         return reverse_lazy('main_app:question_detail',
                             kwargs = {'pk':question_id})
@@ -137,7 +139,7 @@ class QuestionDetailView(DetailView):
         profile = get_object_or_404(Profile, user = request.user)
 
         # makes 'viewed' attribute of all the notifications of this
-        # question for the logged in user equal to 'viewed'
+        # question ONLY for the logged in user equal to True
         for notif in profile.notifications.all():
             if notif.answer in question.answers.all():
                 notif.viewed = True
@@ -161,7 +163,7 @@ class QuestionDetailView(DetailView):
 
 
 
-# TODO: Change this to Profile View
+# TODO: Rename this to Profile View
 class UserDetailView(DetailView):
     '''View which shows the profile of a user in a web page.
        Shows questions aksed by the user, username and bio.
@@ -392,13 +394,13 @@ def vote(request, **kwargs):
 
 def change_password(request):
     '''Changes password of the logged in user.
-       
+
        Displays the form on a 'GET' request and changes the password on a POST request.
        Redirects to the 'main_app/home' if successfully changed else
        back to the password change page.
        Also logs out of all sessions other than current session.
 
-    '''   
+    '''
     if request.method == 'GET':
         # Displays the form
         return render(request, 'main_app/password_change.html',
@@ -421,7 +423,7 @@ def change_password(request):
             print("passwords don't match")
             return redirect('/main_app/password')
         else:
-            pass    
+            pass
 
         # checks if the current password entered is correct.
         # Returns a user object if correct else None
@@ -431,10 +433,11 @@ def change_password(request):
             print('Incorrect Password')
             return redirect('/main_app/password')
         else:
-            pass    
+            pass
 
-        # Sets new password for the logged in users
-        user = request.user    
+        # Sets new password for the logged in user
+        # doing this will log out the user from all sessions
+        user = request.user
         user.set_password(password1)
         user.save()
 

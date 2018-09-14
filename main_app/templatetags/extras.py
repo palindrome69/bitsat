@@ -8,6 +8,8 @@ from main_app.models import Question, Profile, Vote
 
 register = template.Library()
 
+
+
 @register.filter(name='vote_count')  # decorator
 def vote_count(value):
     ''' returns the number of upvotes and

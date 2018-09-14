@@ -61,17 +61,21 @@ class Answer(models.Model):
 
 class Notification(models.Model):
     '''When a new answer is created the author of the question
-       or a user which is following the question
+       and users  following the question
        will be notified by creating a new notification object.
     '''
 
-    # whom to notify for this notification
+    # whom to notify
     to = models.ForeignKey(Profile, on_delete = models.CASCADE, related_name = 'notifications')
+
     # whose action caused the notification
     by = models.ForeignKey(Profile, on_delete = models.CASCADE, related_name = 'actions')
+
     # answer which caused notification
     answer = models.ForeignKey(Answer, on_delete = models.CASCADE, related_name = 'actions')
+    
     date = models.DateTimeField(blank=False)
+
     # checks if notification is viewed
     viewed = models.BooleanField(default = False)
 
@@ -96,8 +100,10 @@ class Vote(models.Model):
 
     class Meta:
         '''Meta Classes provide more funtionality to a Model.
+
            For more information on Meta see :
            https://docs.djangoproject.com/en/2.1/topics/db/models/#meta-options
+        
         '''
         # Adds a unique constraint on the fields.
         unique_together = (('question','user', 'type'),)

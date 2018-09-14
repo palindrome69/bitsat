@@ -24,6 +24,15 @@ class PasswordChangeForm(forms.Form):
     password1 = forms.CharField(widget = forms.PasswordInput())
     password2 = forms.CharField(widget = forms.PasswordInput())
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['password1'].label = 'New Password'
+        self.fields['password1'].help_text = """Enter a strong password having
+                                                 a combination of alphanumeric 
+                                                 characters and special characters"""
+        self.fields['password2'].label = 'Confirm Password'
+        self.fields['password2'].help_text = 'Re-enter new Password'
+
 
 class ProfileForm(forms.ModelForm):
     ''' Form class which focuses on the profile
