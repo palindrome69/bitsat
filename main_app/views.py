@@ -435,12 +435,11 @@ def change_password(request):
             pass
 
         # Sets new password for the logged in user
-<<<<<<< HEAD
         # doing this will log out the user from all sessions
         user = request.user
-=======
+
         user = request.user    
->>>>>>> search
+
         user.set_password(password1)
         user.save()
 
