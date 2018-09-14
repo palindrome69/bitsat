@@ -29,6 +29,7 @@ urlpatterns = [
     path('user/edit/<int:pk>/', ProfileEdit.as_view()),
     path('answer/delete/<int:pk>/', DeleteAnswer.as_view()),
     path('password/',change_password),
+    path('search/',search),
 
 
 
