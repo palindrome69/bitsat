@@ -243,7 +243,7 @@ class UserCreate(CreateView):
         return context
 
     def get_success_url(self):
-        '''Creates profile of the new user created then returns
+        '''Creates profile of the user created then returns
            the success_url.
 
         '''
@@ -256,7 +256,7 @@ class UserCreate(CreateView):
 @login_required    #decorator
 def follow(request, **kwargs):
     '''Handles following of a question.
-       Returns to the previous URL if successfully followed.
+       Returns to the previous page if successfully followed.
 
     '''
 
@@ -277,7 +277,7 @@ def follow(request, **kwargs):
     return redirect(last_page)
 
 def unfollow(request, **kwargs):
-    '''Handles unfollowing of a question
+    '''Handles unfollowing of a question.
 
     '''
     # ID of the question followed
@@ -426,9 +426,8 @@ def change_password(request):
             pass
 
         # checks if the current password entered is correct.
-        # Returns a user object if correct else None
+        # Returns a user object if correct else returns None
         user = authenticate(request, username = username, password = current_password)
-
         if not user:
             print('Incorrect Password')
             return redirect('/main_app/password')
@@ -436,15 +435,78 @@ def change_password(request):
             pass
 
         # Sets new password for the logged in user
+<<<<<<< HEAD
         # doing this will log out the user from all sessions
         user = request.user
+=======
+        user = request.user    
+>>>>>>> search
         user.set_password(password1)
         user.save()
 
-        # logs in for current session as password is changed
+        # logs in for current session as password was changed
         login(request, user)
 
         return redirect('/main_app/home')
+
+def search(request):
+    '''Searches for a question and returns a new page with results.
+
+       How does it search?
+
+       Takes one word at a time from the search query and
+       if the word is not in the COMMON_WORDS list
+       and it is not a single letter, it is searched
+       in all questions in the database.
+       Questions containing this word are returned.
+       It continues until all words are searched.
+      
+    '''
+    # List of commonly used words  
+    COMMON_WORDS = ['why', 'how', 'what', 'is', 'are',
+                   'or', 'when', 'whom', 'where', 'that',
+                   'to', 'i', 'am', 'up', 'an' ]
+
+    # Gets query, this is what the user searched.
+    query = request.GET.get('query')
+
+    # Empty search
+    if len(query) == 0:
+        return redirect(request.META.get('HTTP_REFERER'))
+    else:
+        pass    
+
+    # removes question mark at the end if any
+    if query[-1] == '?':
+        query = query[:-1]
+    else:
+        pass    
+
+    # list of all words in query   
+    query_words = query.split(" ")
+    query_words = [word.lower() for word in query_words]
+
+    # list of all results
+    results = []
+
+    # Finds results
+    for word in query_words:
+        if word not in COMMON_WORDS and len(word) > 1:
+
+            # Queryset of all questions having the word.
+            matches = Question.objects.filter(question__contains = word)
+
+            for match in matches:
+                if match not in results:
+
+                    # Adds question to results
+                    results.append(match)
+                else:
+                    pass    
+        else:
+            pass
+
+    return render(request, 'main_app/search_result.html', context = {'results':results})
 
 class Logout(LogoutView):
     # Redirects to this url after successfully logged out

@@ -1,0 +1,14 @@
+{% extends 'main_app/main_app_base.html' %}
+{% load humanize %}
+{% load extras %}
+{% block body_block%}
+<div class="container" > <p> </p></div>
+{% if results %}
+{% for question in results %}
+{% include "main_app/_questions.html" %}
+{% endfor %}
+{% else %}
+<h2 class="display-3" > No Questions matched your search :/ </h2>
+{% endif %}
+
+{% endblock %}
