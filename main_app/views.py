@@ -13,7 +13,8 @@ from main_app.forms import QuestionForm, UserForm, ProfileForm,PasswordChangeFor
 from main_app.models import Profile, Question, Answer, Vote, Notification
 from django import forms
 
-'''ALL VIEWS TO THIS APP ARE DEFINED HERE'''
+'''ALL VIEWS TO THIS APP ARE DEFINED HERE
+'''
 
 #----------VIEWS RELATED TO USER---------#
 
@@ -99,10 +100,10 @@ class ProfileEdit(UpdateView):
         '''Updates the bio of the user and returns the success_url.
         '''
         # Profile of the user which is being edited
-        profile = Profile.objects.filter(user = self.object)[0]
+        profile = self.request.user.profile
 
         if not self.request.POST.get('bio'):
-            # assigns new bio to a blank string
+            # if field was left blank
             profile.bio = ""
         else:
             # updates bio
@@ -111,13 +112,6 @@ class ProfileEdit(UpdateView):
         profile.save()
         return self.success_url
 
-    def get_context_data(self, *args, **kwargs):
-        '''Adds more data to context dictionary and returns it
-
-        '''
-        context = super().get_context_data(*args, **kwargs)
-        context['profile'] = Profile.objects.filter(user = self.object)[0]
-        return context
 
 def change_password(request):
     '''Changes password of the logged in user.
@@ -129,12 +123,10 @@ def change_password(request):
 
     '''
     # logged in user's profile object
-    profile = Profile.objects.filter(user = request.user)[0]
 
     if request.method == 'GET':
         return render(request, 'main_app/password_change.html',
-                      context={'form':PasswordChangeForm(),
-                               'profile':profile })
+                      context={'form':PasswordChangeForm()})
 
     else:
 
@@ -142,11 +134,9 @@ def change_password(request):
         password1 = request.POST.get('password1')
         password2 = request.POST.get('password2')
 
-        # username of the logged in user
         username = request.user.username
         current_password = request.POST.get('current_password')
 
-        # Checks the equality of the new password in both password fields
         if password1 != password2:
             print("passwords don't match")
             return redirect('/main_app/password')
@@ -154,8 +144,8 @@ def change_password(request):
             pass
 
         # checks if the current password entered is correct.
-        # Returns a user object if correct else returns None
         user = authenticate(request, username = username, password = current_password)
+
         if not user:
             print('Incorrect Password')
             return redirect('/main_app/password')
@@ -168,7 +158,7 @@ def change_password(request):
         user.set_password(password1)
         user.save()
 
-        # logs in for current 
+        # logs in for current session
         login(request, user)
 
         return redirect('/main_app/home')
@@ -196,9 +186,11 @@ class DeleteQuestion(DeleteView):
 
 class DeleteAnswer(DeleteView):
     '''A view that displays a confirmation page and deletes an existing object.
+    
        The given object will only be deleted if the request method is POST.
-       If this view is fetched via GET, it will display a confirmation page
-       that should contain a form that POSTs to the same URL
+       If this view is fetched via GET, it will display a POPUP to confirm
+       deletion.
+
     '''
     model = Answer
     def get_success_url(self):
@@ -209,8 +201,8 @@ class DeleteAnswer(DeleteView):
                             kwargs = {'pk':question_id})
 
 class QuestionDetailView(DetailView):
-
     '''Inherits from DetailView class.
+
        This View shows all answers to a given question
        and lets add own answers.
       
@@ -223,12 +215,9 @@ class QuestionDetailView(DetailView):
         '''Handles GET request.
 
         '''
-        # id of the question viewing
         question_id = kwargs['pk']
         question = get_object_or_404(Question, id = question_id)
-
-        # Profile of the logged in user
-        profile = get_object_or_404(Profile, user = request.user)
+        profile = request.user.profile
 
         # makes 'viewed' attribute of all the notifications of this
         # question ONLY for the logged in user equal to True
@@ -239,15 +228,13 @@ class QuestionDetailView(DetailView):
 
         return super().get(request, *args, **kwargs)
 
-
     def get_context_data(self, **kwargs):
-        '''returns context data to be used in template'''
+        '''returns context data to be used in template
+        
+        '''
         context = super().get_context_data(**kwargs)
-        # profile object of logged in user
-        context['profile'] = Profile.objects.get(user = self.request.user)
-        # answers posted by logged in user
+        # All answers to the question
         context['answerlist'] = self.object.answers.all()
-
         return context
 
 #----HOME PAGE AND SEARCH--------#
@@ -256,8 +243,8 @@ class QuestionDetailView(DetailView):
 def main_app_view(request):
 
     '''Home Page of the website when logged in.
-       Displays blocks of questions:
 
+    Displays these blocks of questions:
     'Popular'  'questions'  'My Questions'  'New Questions'  'Up Voted'  'Following'
     
     '''
@@ -265,13 +252,13 @@ def main_app_view(request):
     questions_by_votes = Question.objects.order_by('-validity')
 
     # profile of logged in user
-    profile = Profile.objects.filter(user = request.user)[0]
+    profile = request.user.profile
+    # questions asked by logged in user
     userquestions = profile.questions.all()
 
     if request.method == 'GET':
             return render(request, 'main_app/question_list.html',
                 context = {'question_list':question_list,
-                           'profile':profile,
                            'question_form':QuestionForm(),
                             'userquestions':userquestions,
                             'questions_by_votes':questions_by_votes})
@@ -307,22 +294,18 @@ def search(request):
 
     # if search query is blank
     if len(query) == 0:
-        # redirects to the previous page
+        # previous page
         return redirect(request.META.get('HTTP_REFERER'))
     else:
         pass    
 
-    # removes question mark at the end if any
-    if query[-1] == '?':
-        query = query[:-1]
-    else:
-        pass    
+    if query[-1] == '?': query = query[:-1]
+    else: pass    
 
     # list of all words in query   
     query_words = query.split(" ")
     query_words = [word.lower() for word in query_words]
 
-    # list of all results
     results = []
 
     # Finds results
@@ -336,8 +319,8 @@ def search(request):
                     pass    
         else:
             pass
-
-    return render(request, 'main_app/search_result.html', context = {'results':results})
+    return render(request, 'main_app/search_result.html',
+                 context = {'results':results,})
 
 #------VIEWS RELATED TO ANSWER---------#
 
@@ -347,16 +330,15 @@ def answer(request, **kwargs):
     
        Creates Notification for the users following
        the question and the user who posted the question.
+       Notification will not be created for the author if
+       the author of the question answers his own question.
     
     '''
-    # ID(PrimaryKey) of the question which is answered
     question_id = kwargs['pk']
-    question = Question.objects.filter(id = question_id)[0]
+    question = get_object_or_404(Question, id = question_id)
+    profile = request.user.profile
 
-    # profile of logged in user
-    profile = Profile.objects.filter(user = request.user)[0]
-
-    # if answer is not blank
+    # if answer area is not left blank
     if request.POST.get('answer'):
         ans = request.POST.get('answer')
         answer = Answer(answer = ans, pub_date = timezone.now(),
@@ -397,13 +379,9 @@ def follow(request, **kwargs):
        Returns to the previous page if successfully followed.
 
     '''
-
-    # ID of the question followed
     question_id = kwargs['id']
-    question = Question.objects.filter(id = question_id)[0]
-
-    # Profile of the user which followed the question (Logged in user)
-    profile = Profile.objects.filter(user = request.user)[0]
+    question = get_object_or_404(Question, id = question_id)
+    profile = request.user.profile
 
     # Adds the user to the following list
     question.following.add(profile)
@@ -416,18 +394,14 @@ def unfollow(request, **kwargs):
     '''Handles unfollowing of a question.
 
     '''
-    # ID of the question followed
     question_id = kwargs['id']
-    question = Question.objects.filter(id = question_id)[0]
-
-    # Profile of the user which followed the question (Logged in user)
-    profile = Profile.objects.filter(user = request.user)[0]
+    question = get_object_or_404(Question, id = question_id)
+    profile = request.user.profile
 
     # removes the profile(user) from the following list
     question.following.remove(profile)
     question.save()
 
-    # page from which question was 'unfollowed'
     last_page = request.META.get('HTTP_REFERER')
     return redirect(last_page)
 
@@ -439,10 +413,8 @@ def vote(request, **kwargs):
 
     question_id = kwargs['pk']
     vote_type = kwargs['type']
-    question = Question.objects.filter(id = question_id)[0]
-
-    # profile of user logged in (user which voted)
-    profile = Profile.objects.filter(user = request.user)[0]
+    question = get_object_or_404(Question, id = question_id)
+    profile = request.user.profile
 
     # will be an empty queryset if not voted before else will have just one object
     previously_voted = Vote.objects.filter(question = question, user = profile)

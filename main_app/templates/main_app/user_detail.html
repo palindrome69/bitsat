@@ -14,6 +14,8 @@
          <p class="card-text text-muted">{{profile.bio}}</p>
          {% if user == profile.user %}
          <p class="text-center"> <a href="/main_app/user/edit/{{profile.user.id}}" class="card-link">Edit profile</a></p>
+         {% else %}
+         <p class="text-muted"><strong></strong>{{profile.user.email}}</p>
          {% endif %}
       </div>
    </div>

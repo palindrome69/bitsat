@@ -31,7 +31,7 @@
               Account
               </a>
               <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                 <a class="dropdown-item" href="/main_app/user/edit/{{user.pk}}">Edit Profile</a>
+                 <a class="dropdown-item" href="/main_app/user/edit/{{user.pk}}">Edit profile</a>
                  <a class="dropdown-item" href="/main_app/password/">Change Password</a>
                  <div class="dropdown-divider"></div>
                  <a class="dropdown-item" href="/user_logout">Log Out</a>
@@ -41,7 +41,7 @@
           </ul>
 
           <ul class="navbar-nav">
-              {% if not profile.notifications.all|is_viewed %}
+              {% if not user.profile.notifications.all|is_viewed %}
               <li class="nav-item">
                   <a class="nav-link disabled" href="#">No Notifications</a>
                 </li>
@@ -49,10 +49,10 @@
              {% else %}
             <li class="nav-item dropdown active">
               <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Notifications <span class="badge badge-light">{{ profile.notifications.all | is_viewed | length }}</span>
+            Notifications <span class="badge badge-light">{{ user.profile.notifications.all | is_viewed | length }}</span>
           </a>
           <div class="dropdown-menu" style="width: 25rem" aria-labelledby="navbarDropdown">
-            {% for notif in profile.notifications.all|is_viewed %}
+            {% for notif in user.profile.notifications.all|is_viewed %}
             <a href="{% url 'main_app:question_detail' pk=notif.answer.question.id %}" class="list-group-item list-group-item-action flex-column align-items-start">
             <div class="d-flex w-100 justify-content-between">
               <h5 class="mb-1">@{{notif.by.user.username}}</h5>

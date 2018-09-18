@@ -33,7 +33,6 @@ class PasswordChangeForm(forms.Form):
         self.fields['password2'].label = 'Confirm Password'
         self.fields['password2'].help_text = 'Re-enter new Password'
 
-
 class ProfileForm(forms.ModelForm):
     ''' Form class which focuses on the profile
         components of a user like the bio and user_type
@@ -65,7 +64,7 @@ class QuestionForm(forms.ModelForm):
 
     class Meta:
         ''' Meta helps adding metadata to the form class.
-            Basically data which is not a field.
+            Basically data which is not a field object.
         '''
         model = Question
 

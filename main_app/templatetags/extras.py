@@ -50,7 +50,7 @@ def opp_vote(question, user):
        by the user on the question.
 
     '''
-    profile = Profile.objects.filter(user = user)[0]
+    profile = user.profile
     vote = question.votes.filter(user = profile)[0]
     if vote.type == "Upvote":
         return "Downvote"
@@ -74,7 +74,7 @@ def upvoted_questions(user):
        by the user.
 
     '''   
-    profile = Profile.objects.filter(user = user)[0]
+    profile = user.profile
     votes = Vote.objects.filter(user = profile, type = 'Upvote')
     questions = [vote.question for vote in votes]
     return questions
@@ -85,7 +85,7 @@ def following_questions(user):
        followed by the user
 
     '''    
-    profile = Profile.objects.filter(user = user)[0]
+    profile = user.profile
     return profile.following.all()
 
 @register.filter(name = 'check_following')
@@ -94,7 +94,7 @@ def check_following(question, user):
        question else returns 0
 
     '''
-    profile = Profile.objects.filter(user = user)[0]
+    profile = user.profile
     flag = 0
     for followers in question.following.all():
         if profile == followers:
