@@ -13,10 +13,14 @@ from main_app.forms import QuestionForm, UserForm, ProfileForm,PasswordChangeFor
 from main_app.models import Profile, Question, Answer, Vote, Notification
 from django import forms
 
-'''ALL VIEWS TO THIS APP ARE DEFINED HERE
+'''ALL VIEWS TO THIS APP ARE DEFINED HERE.
+
+   For more information to Class Based Views see:
+   https://docs.djangoproject.com/en/2.1/topics/class-based-views/
+
 '''
 
-#----------VIEWS RELATED TO USER---------#
+#----------VIEWS RELATED TO USER / Profile---------#
 
 class UserLogin(LoginView):
     '''This is the login page which is the home page as well'''
@@ -265,7 +269,9 @@ def main_app_view(request):
 
     # When a question form is submitted (POST request)
     else:
-        new_question = request.POST.get('question').capitalize()
+        new_question = request.POST.get('question')
+        new_question.strip()
+        new_question.capitalize()
         question = Question(question = new_question, author = profile,
                                     pub_date = timezone.now())
         question.save()
@@ -291,6 +297,7 @@ def search(request):
 
     # Gets query, this is what the user searched.
     query = request.GET.get('query')
+    query.strip()
 
     # if search query is blank
     if len(query) == 0:
@@ -341,6 +348,7 @@ def answer(request, **kwargs):
     # if answer area is not left blank
     if request.POST.get('answer'):
         ans = request.POST.get('answer')
+        ans.strip()
         answer = Answer(answer = ans, pub_date = timezone.now(),
                         author = profile, question = question)
         answer.save()

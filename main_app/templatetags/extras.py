@@ -2,9 +2,7 @@ from django import template
 from main_app.models import Question, Profile, Vote
 
 '''All custom filters are defined here.
-   A new instance of Library registers the filters and tags
-   for use in HTML.
-
+   
     usage of filters in a template :
     if the filter is:
 
@@ -16,7 +14,7 @@ from main_app.models import Question, Profile, Vote
         {{ value|filter:arg }}
 
    '''
-
+# new instance of library. Registers the filters and tags
 register = template.Library()
 
 @register.filter(name='vote_count')  # decorator

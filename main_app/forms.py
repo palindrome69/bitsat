@@ -5,6 +5,10 @@ from django.contrib.auth import authenticate
 
 '''All the forms required in the website.
    Instance of each class is a new django form.
+
+   For more information see :
+   https://docs.djangoproject.com/en/2.1/topics/forms/
+   
 '''
 
 class UserForm(UserCreationForm):

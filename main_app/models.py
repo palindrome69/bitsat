@@ -3,13 +3,27 @@ from django.contrib.auth.models import User
 from django.urls import reverse,reverse_lazy
 from django.utils import timezone
 
+'''All models for this app are defined here.
+   
+   A django model class is basically a table in the database.
+   For more information see
+   https://docs.djangoproject.com/en/2.1/topics/db/models/
+
+   User model used is the django's in-built user model.
+   For more information on User see:
+   https://docs.djangoproject.com/en/2.1/ref/contrib/auth/#django.contrib.auth.models.User
+
+
+'''
 
 class Profile(models.Model):
 
     '''Profile of a user.
-       This extends the functionality of the built in User model by
-       giving it a profile through a OneToOneField.
-       the user attribute is the user whose profile is defined .
+
+       Every User model object created has a corresponding
+       Profile object. Profile has some more information about
+       the user.
+
        '''
 
     # list of tuples where first element of tuple is actual
