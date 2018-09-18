@@ -128,9 +128,13 @@ def change_password(request):
        Also logs out of all sessions other than current session.
 
     '''
+    # logged in user's profile object
+    profile = Profile.objects.filter(user = request.user)[0]
+
     if request.method == 'GET':
         return render(request, 'main_app/password_change.html',
-                      context={'form':PasswordChangeForm()})
+                      context={'form':PasswordChangeForm(),
+                               'profile':profile })
 
     else:
 
