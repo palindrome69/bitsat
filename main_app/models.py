@@ -82,7 +82,6 @@ class Notification(models.Model):
     def __str__(self):
         return self.by.user.username + " to " + self.to.user.username
 
-
 class Vote(models.Model):
     '''Votes are given to question and it can be an Upvote
        or a Downvote. field 'user' is the profile of user which

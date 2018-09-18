@@ -20,11 +20,11 @@
       </li>
 
       <li class="nav-item">
-         <a class="nav-link" id="upquestions-tab" data-toggle="tab" href="#upquestions" role="tab" aria-controls="home" aria-selected="true">Up Voted  <span class="badge badge-light">{{question_list | upvoted_questions:user | length}}</span></a>
+         <a class="nav-link" id="upquestions-tab" data-toggle="tab" href="#upquestions" role="tab" aria-controls="home" aria-selected="true">Up Voted  <span class="badge badge-light">{{ user|upvoted_questions | length}}</span></a>
       </li>
 
       <li class="nav-item">
-         <a class="nav-link" id="fquestions-tab" data-toggle="tab" href="#fquestions" role="tab" aria-controls="home" aria-selected="true">Following  <span class="badge badge-light">{{question_list | following_questions:user | length}}</span></a>
+         <a class="nav-link" id="fquestions-tab" data-toggle="tab" href="#fquestions" role="tab" aria-controls="home" aria-selected="true">Following  <span class="badge badge-light">{{ user|following_questions | length}}</span></a>
       </li>
 
    </ul>
@@ -58,7 +58,7 @@
       <div class="container">
          <p>  </p>
       </div>
-      {% for question in question_list|order_by_votes %}
+      {% for question in questions_by_votes %}
       {% include "main_app/_questions.html" %}
       {% endfor %}
    </div>
@@ -93,7 +93,7 @@
          <div class="container">
             <p>  </p>
          </div>
-         {% for question in question_list|following_questions:user %}
+         {% for question in user|following_questions %}
          {% include "main_app/_questions.html" %}
          {% endfor %}
 
@@ -106,7 +106,7 @@
          <div class="container">
             <p>  </p>
          </div>
-         {% for question in question_list|upvoted_questions:user %}
+         {% for question in user|upvoted_questions %}
          {% include "main_app/_questions.html" %}
          {% endfor %}
    </div>

@@ -13,6 +13,7 @@ app_name --> This is the name by which the urls of THIS app can
              be referred in the 'reverse' method.
              'reverse(app_name:url_name)'.
              *works for reverse_lazy as well.
+
 '''
 
 app_name = 'main_app'
@@ -25,7 +26,7 @@ urlpatterns = [
     path('question/<type>/<int:pk>/', vote),
     path('follow/<int:id>/', follow),
     path('unfollow/<int:id>/', unfollow),
-    path('user/<int:pk>/', login_required(UserDetailView.as_view())),
+    path('user/<int:pk>/', login_required(ProfileView.as_view())),
     path('user/edit/<int:pk>/', ProfileEdit.as_view()),
     path('answer/delete/<int:pk>/', DeleteAnswer.as_view()),
     path('password/',change_password),
