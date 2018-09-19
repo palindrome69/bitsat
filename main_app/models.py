@@ -1,5 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User 
 from django.urls import reverse,reverse_lazy
 from django.utils import timezone
 
@@ -9,7 +9,8 @@ from django.utils import timezone
    For more information see
    https://docs.djangoproject.com/en/2.1/topics/db/models/
 
-   User model used is the django's in-built user model.
+   user model used for this website is the django's in-built User model
+
    For more information on User see:
    https://docs.djangoproject.com/en/2.1/ref/contrib/auth/#django.contrib.auth.models.User
 
@@ -25,14 +26,17 @@ class Profile(models.Model):
        the user.
 
        '''
-
-    # list of tuples where first element of tuple is actual
-    # value of the type and second is the human readable value of it.
     USER_TYPES =   [('aspirant', 'Aspirant'), ('student', 'Student')]
 
     user = models.OneToOneField(User, on_delete = models.CASCADE)
     user_type = models.TextField(blank = False, choices = USER_TYPES)
     bio = models.CharField(max_length = 250, blank = True)
+
+    @property  # decorator
+    def full_name(self):
+        '''returns the user's full name
+        '''
+        return "{} {}".format(self.user.first_name, self.user.last_name)
 
     def __str__(self):
         return self.user.username
@@ -40,12 +44,11 @@ class Profile(models.Model):
 
 class Question(models.Model):
     '''Questions asked by different Users.
-       'author' is the Profile of the user which asked the question.
+       
     '''
     question = models.TextField(blank=False,)
     author = models.ForeignKey(Profile, on_delete=models.CASCADE,
                                related_name='questions')
-    # Date when question published.
     pub_date = models.DateTimeField(blank = False)
 
     # Users which are following this question.
@@ -75,14 +78,14 @@ class Answer(models.Model):
 
 class Notification(models.Model):
     '''When a new answer is created the author of the question
-       and users  following the question
+       and users following the question
        will be notified by creating a new notification object.
     '''
 
-    # whom to notify
+    # whom to notify. (Profile object)
     to = models.ForeignKey(Profile, on_delete = models.CASCADE, related_name = 'notifications')
 
-    # whose action caused the notification
+    # whose action caused the notification (Profile object)
     by = models.ForeignKey(Profile, on_delete = models.CASCADE, related_name = 'actions')
 
     # answer which caused notification
@@ -90,11 +93,43 @@ class Notification(models.Model):
     
     date = models.DateTimeField(blank=False)
 
-    # checks if notification is viewed
+    # boolean field which is true if notification is viewed.
     viewed = models.BooleanField(default = False)
 
     def __str__(self):
         return self.by.user.username + " to " + self.to.user.username
+
+    @classmethod
+    def create_notif(cls, question, answer, profile):
+        '''Creates notif for the author and users following the question
+           when someone other than the author of the question posts the
+           answer to the question
+
+           question : Question which was answered.
+           answer   : answer which led to notification.
+           profile  : profile object of the logged in user.
+
+        '''
+        following_users = question.following.all()
+        author = question.author
+
+        # prevents creating notification if author of the question
+        # posts an answer to the question
+        if author != profile:
+            author_notif = cls(to = author, by = profile,
+                                        answer = answer, date = timezone.now())
+            author_notif.save()
+        else:
+            pass    
+        # creates notifs for users following the question
+        for user in following_users:
+            if user != profile and user != author:
+                followers_notif = cls(to = user, by = profile,
+                                               answer = answer, date = timezone.now())
+                followers_notif.save()
+            else:
+                pass    
+
 
 class Vote(models.Model):
     '''Votes are given to question and it can be an Upvote
@@ -112,7 +147,7 @@ class Vote(models.Model):
                              related_name = 'votes')
 
     class Meta:
-        '''Meta Classes provide more funtionality to a Model.
+        '''Meta Classes helps adding metadata to the model.
 
            For more information on Meta see :
            https://docs.djangoproject.com/en/2.1/topics/db/models/#meta-options

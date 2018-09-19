@@ -8,15 +8,15 @@ from django.contrib.auth import authenticate
 
    For more information see :
    https://docs.djangoproject.com/en/2.1/topics/forms/
-   
+
 '''
 
 class UserForm(UserCreationForm):
 
     class Meta:
         ''' Meta helps adding metadata to the form class.
-            Basically data which is not a field.
         '''
+        # form will be made for this model class
         model = User
 
         # Fields which must be used in the form
@@ -24,12 +24,16 @@ class UserForm(UserCreationForm):
                   'last_name','password1', 'password2')
 
 class PasswordChangeForm(forms.Form):
+    '''Form for changing password of the user
+    '''
     current_password = forms.CharField(widget = forms.PasswordInput())
     password1 = forms.CharField(widget = forms.PasswordInput())
     password2 = forms.CharField(widget = forms.PasswordInput())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+
+        # customizations to the fields
         self.fields['password1'].label = 'New Password'
         self.fields['password1'].help_text = """Enter a strong password having
                                                  a combination of alphanumeric 
@@ -43,23 +47,14 @@ class ProfileForm(forms.ModelForm):
     '''
 
     class Meta:
-        ''' Meta helps adding metadata to the form class.
-            Basically data which is not a field.
-        '''
         model = Profile
-
-        # Fields which must be used in the form
         fields = ('user_type','bio')
 
-    # overrides __init__ method to customize widgets
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
 
-        # sets label to fields
         self.fields['user_type'].label = 'What are you'
         self.fields['bio'].label = 'Write Something about Yourself'
-
-        # sets help text to 'bio' field
         self.fields['bio'].help_text = '''It is advised to mention your desired
                                           branch and score If you're an aspirant'''
 
@@ -67,12 +62,7 @@ class ProfileForm(forms.ModelForm):
 class QuestionForm(forms.ModelForm):
 
     class Meta:
-        ''' Meta helps adding metadata to the form class.
-            Basically data which is not a field object.
-        '''
         model = Question
-
-        # Fields which must be used in the form
         fields = ('question' ,)
 
         # Customizing widgets
@@ -80,8 +70,6 @@ class QuestionForm(forms.ModelForm):
             'question': forms.Textarea(attrs={'rows': 2}),
         }
 
-    # overrides __init__ method to customize widgets
     def __init__(self,*args,**kwargs):
         super().__init__(*args,**kwargs)
-        # sets the label of question field
         self.fields['question'].label = ''

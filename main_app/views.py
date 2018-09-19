@@ -9,8 +9,8 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
-from main_app.forms import QuestionForm, UserForm, ProfileForm,PasswordChangeForm
-from main_app.models import Profile, Question, Answer, Vote, Notification
+from main_app.forms import *
+from main_app.models import *
 from django import forms
 
 '''ALL VIEWS TO THIS APP ARE DEFINED HERE.
@@ -23,7 +23,9 @@ from django import forms
 #----------VIEWS RELATED TO USER / Profile---------#
 
 class UserLogin(LoginView):
-    '''This is the login page which is the home page as well'''
+    '''This is the login page which is the home page as well
+    
+    '''
     template_name = 'boot.html' # HTML used for this page
 
 class ProfileView(DetailView):
@@ -32,6 +34,7 @@ class ProfileView(DetailView):
 
     '''
     model = Profile
+
     # Template used to display profile
     template_name = 'main_app/user_detail.html'
 
@@ -81,6 +84,7 @@ class ProfileEdit(UpdateView):
 
      '''
     model = User
+
     # Fields of 'User' model which may be edited
     fields = ['username', 'email',]
 
@@ -92,9 +96,8 @@ class ProfileEdit(UpdateView):
 
            Also makes sure that a user cannot access some other user's
            editing page.
+           
         '''
-
-        # if logged in user is not same as the user being edited
         if request.user != User.objects.filter(id = kwargs['pk'])[0]:
             return redirect('/main_app/home')
         else:
@@ -102,17 +105,12 @@ class ProfileEdit(UpdateView):
 
     def get_success_url(self):
         '''Updates the bio of the user and returns the success_url.
+
         '''
         # Profile of the user which is being edited
         profile = self.request.user.profile
 
-        if not self.request.POST.get('bio'):
-            # if field was left blank
-            profile.bio = ""
-        else:
-            # updates bio
-            profile.bio = self.request.POST.get('bio')
-
+        profile.bio = self.request.POST.get('bio')
         profile.save()
         return self.success_url
 
@@ -126,12 +124,9 @@ def change_password(request):
        Also logs out of all sessions other than current session.
 
     '''
-    # logged in user's profile object
-
     if request.method == 'GET':
         return render(request, 'main_app/password_change.html',
                       context={'form':PasswordChangeForm()})
-
     else:
 
         # password 1 and password 2 are fields for new password and its confirmation
@@ -141,31 +136,28 @@ def change_password(request):
         username = request.user.username
         current_password = request.POST.get('current_password')
 
-        if password1 != password2:
-            print("passwords don't match")
-            return redirect('/main_app/password')
-        else:
-            pass
-
         # checks if the current password entered is correct.
         user = authenticate(request, username = username, password = current_password)
 
-        if not user:
+        if password1 != password2:
+            print("passwords don't match")
+            return redirect('/main_app/password')
+
+        elif not user:
             print('Incorrect Password')
             return redirect('/main_app/password')
+
         else:
-            pass
+            # Sets new password for the logged in user
+            # doing this will log out the user from all sessions
+            user = request.user
+            user.set_password(password1)
+            user.save()
 
-        # Sets new password for the logged in user
-        # doing this will log out the user from all sessions
-        user = request.user
-        user.set_password(password1)
-        user.save()
+            # logs in for current session
+            login(request, user)
 
-        # logs in for current session
-        login(request, user)
-
-        return redirect('/main_app/home')
+            return redirect('/main_app/home')
 
 class Logout(LogoutView):
     # Redirects to this url after successfully logged out
@@ -194,13 +186,13 @@ class DeleteAnswer(DeleteView):
        The given object will only be deleted if the request method is POST.
        If this view is fetched via GET, it will display a POPUP to confirm
        deletion.
-
     '''
     model = Answer
     def get_success_url(self):
         
         # ID of the question whose answer is deleted
         question_id = self.object.question.id
+
         return reverse_lazy('main_app:question_detail',
                             kwargs = {'pk':question_id})
 
@@ -208,8 +200,7 @@ class QuestionDetailView(DetailView):
     '''Inherits from DetailView class.
 
        This View shows all answers to a given question
-       and lets add own answers.
-      
+       and let's add own answers.
     '''
 
     model = Question
@@ -253,7 +244,7 @@ def main_app_view(request):
     
     '''
     question_list = Question.objects.order_by('-pub_date')
-    questions_by_votes = Question.objects.order_by('-validity')
+    questions_by_votes = question_list.order_by('-validity')
 
     # profile of logged in user
     profile = request.user.profile
@@ -305,7 +296,8 @@ def search(request):
         return redirect(request.META.get('HTTP_REFERER'))
     else:
         pass    
-
+    
+    # removes question mark
     if query[-1] == '?': query = query[:-1]
     else: pass    
 
@@ -327,7 +319,7 @@ def search(request):
         else:
             pass
     return render(request, 'main_app/search_result.html',
-                 context = {'results':results,})
+                 context = {'results' : results})
 
 #------VIEWS RELATED TO ANSWER---------#
 
@@ -352,27 +344,8 @@ def answer(request, **kwargs):
         answer = Answer(answer = ans, pub_date = timezone.now(),
                         author = profile, question = question)
         answer.save()
-        following_users = question.following.all()
-        author = question.author
+        Notification.create_notif(question, answer, profile)
 
-        # prevents creating notification if author of the question
-        # posts an answer to the question
-        if author != profile:
-            author_notif = Notification(to = author, by = profile,
-                                        answer = answer, date = timezone.now())
-            author_notif.save()
-        else:
-            pass    
-
-        for user in following_users:
-            # prevents creating second notification if the
-            # author of the question is following his own question
-            if user != profile and user != author:
-                followers_notif = Notification(to = user, by = profile,
-                                               answer = answer, date = timezone.now())
-                followers_notif.save()
-            else:
-                pass    
     else:
         pass
 

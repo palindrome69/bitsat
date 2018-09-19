@@ -2,6 +2,8 @@
 {% load bootstrap4 %}
 {% load extras %}
 
+<!-- html of a question card -->
+
 <div class="container container">
 
       <div class="card card-with-shadow">
@@ -11,7 +13,8 @@
             <span aria-hidden="true"><a href = "/main_app/question/delete/{{question.pk}}/">&times;</a></span>
             </button>
             {% endif %}
-            <a class="text text-info font-weight-bold" href="/main_app/user/{{question.author.id}}/"> {{ question.author.user.first_name }} {{ question.author.user.last_name }}
+            <a class="text text-info font-weight-bold" href="/main_app/user/{{question.author.id}}/">
+                  {{question.author.full_name}}
             </a>
 
          </div>

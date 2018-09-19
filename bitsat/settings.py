@@ -137,3 +137,7 @@ STATICFILES_DIRS = [STATIC_DIR, ]
 LOGIN_REDIRECT_URL = 'main_app:main_app_home'
 # Login Page URL
 LOGIN_URL = '/home/'
+
+# Media files
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL  = '/media/'

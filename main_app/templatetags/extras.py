@@ -57,8 +57,8 @@ def opp_vote(question, user):
 
 @register.filter(name = 'first_answer')
 def first_answer(question):
-    '''returns the first answer to the question else
-       returns another string.
+    '''returns the first answer to the question if there, else
+       returns a string saying no answers.
        
     '''
     if question.answers.all():
