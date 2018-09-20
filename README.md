@@ -1,6 +1,6 @@
 # bitsat
 Do you have a question or a doubt about bitsat or BITS in general? This website will help solve your problems.
-This is a forum made using django which is framework in python.
+This is a forum made using django to help solve all your problems.
 
 FOR DEVELOPERS :
 
