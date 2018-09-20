@@ -39,7 +39,6 @@ class ProfileView(DetailView):
     template_name = 'main_app/user_detail.html'
 
 class UserCreate(CreateView):
-
     '''Creates a new User object and its Profile object.
 
        A view that displays a form for creating an object,
@@ -65,7 +64,7 @@ class UserCreate(CreateView):
         return context
 
     def get_success_url(self):
-        '''Creates profile of the user created then returns
+        '''Creates profile object of the user created then returns
            the success_url.
 
         '''

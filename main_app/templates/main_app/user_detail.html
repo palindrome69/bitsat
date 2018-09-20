@@ -2,9 +2,9 @@
 {% load humanize %}
 {% load extras %}
 {% block body_block %}
-<div class="container">
+
 <div class="row">
-<div class="col-sm-5">
+<div class="col">
    <p>
    </p>
    <div class="card" style="width: 25rem;">
@@ -20,7 +20,8 @@
       </div>
    </div>
 </div>
-<div class="col-sm-5">
+
+<div class="col">
 <p>  </p>
 <div class="container container-fluid">
    <ul class="nav nav-pills mb-3" id="myTab" role="tablist">
@@ -30,7 +31,7 @@
    </ul>
 </div>
 {% for question in profile.questions.all %}
-<div class="container ">
+
    <div class="shadow bg-white rounded" style="width: 40rem">
       <div class="card" style="width: 40rem;">
          <div class="card-header">
@@ -84,8 +85,8 @@
            </div>
          </div>
       </div>
-   </div>
-</div>
+   
+
 <p>  </p>
 {% endfor %}
 {% endblock %}

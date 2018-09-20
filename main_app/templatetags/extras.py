@@ -20,7 +20,7 @@ register = template.Library()
 @register.filter(name='vote_count')  # decorator
 def vote_count(question):
     ''' returns the number of upvotes and
-        downvotes for the question
+        downvotes for the question as a string
     
     '''
     upvotes, downvotes = 0, 0
