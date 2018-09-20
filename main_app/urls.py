@@ -14,7 +14,7 @@ app_name = 'main_app'
 
 urlpatterns = [
 
-    path('home/', main_app_view, name = 'main_app_home'),
+    path('home/', home, name = 'main_app_home'),
     path('question/<int:pk>/', login_required(QuestionDetailView.as_view()), name = 'question_detail'),
     path('answer/<int:pk>/', answer),
     path('question/delete/<int:pk>/', login_required(DeleteQuestion.as_view()),),
