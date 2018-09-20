@@ -77,4 +77,4 @@ A login page will appear log in to it user your superuser credentials
 and you'll go to the admin page.
 
 ## AUTHOR
--  https://github.com/palindrom69/
+-  https://github.com/palindrome69/
