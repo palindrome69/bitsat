@@ -5,8 +5,8 @@ This is a forum made using django which is framework in python.
 FOR DEVELOPERS :
 
 **This requires the latest version of Django or version greater than 2.0**
-**It's made using python 3**
-**It requires and internet connection to run locally as bootstrap CDN is linked in the templates**
+**It's made using python 3.**
+**It requires an internet connection to run locally as bootstrap CDN is linked in the templates**
 
 ## Getting started
 You'll need to install the following:
