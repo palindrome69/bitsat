@@ -41,6 +41,17 @@ class PasswordChangeForm(forms.Form):
         self.fields['password2'].label = 'Confirm Password'
         self.fields['password2'].help_text = 'Re-enter new Password'
 
+    def clean(self):
+        print(dir(self))
+        cleaned_data = super().clean()
+        password1 = cleaned_data['password1']
+        password2 = cleaned_data['password2']
+
+        if password1 != password2:
+            raise forms.ValidationError("Passwords don't match. Please try again.")
+
+        return cleaned_data        
+
 class ProfileForm(forms.ModelForm):
     ''' Form class which focuses on the profile
         components of a user like the bio and user_type

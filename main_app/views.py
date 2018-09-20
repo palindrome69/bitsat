@@ -123,41 +123,31 @@ def change_password(request):
        Also logs out of all sessions other than current session.
 
     '''
-    if request.method == 'GET':
-        return render(request, 'main_app/password_change.html',
-                      context={'form':PasswordChangeForm()})
-    else:
+    form = PasswordChangeForm()
 
-        # password 1 and password 2 are fields for new password and its confirmation
-        password1 = request.POST.get('password1')
-        password2 = request.POST.get('password2')
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.POST)
 
-        username = request.user.username
-        current_password = request.POST.get('current_password')
+        if form.is_valid():
+            # data from the form
+            data = form.cleaned_data
+            user = authenticate(username = request.user.username,
+                                password = data['current_password'] )
 
-        # returns a user object if the current password entered is correct.
-        user = authenticate(request, username = username, password = current_password)
+            if user:
+                # changes password if authenticated 
+                user.set_password(data['password1'])
+                user.save()
+                login(request, user)
+                return redirect('main_app:main_app_home')
 
-        if password1 != password2:
-            print("passwords don't match")
-            return redirect('/main_app/password')
+            else:
+                # raises an error
+                form.add_error(None, forms.ValidationError('Enter Correct Password'))   
 
-        elif not user:
-            print('Incorrect Password')
-            return redirect('/main_app/password')
-
-        else:
-            # Sets new password for the logged in user
-            # doing this will log out the user from all sessions
-            user = request.user
-            user.set_password(password1)
-            user.save()
-
-            # logs in for current session
-            login(request, user)
-
-            return redirect('/main_app/home')
-
+    return render(request, 'main_app/password_change.html',
+                 context = {'form':form})        
+          
 class Logout(LogoutView):
     # Redirects to this url after successfully logged out
     # does a reverse lookup for this string
