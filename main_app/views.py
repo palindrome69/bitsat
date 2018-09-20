@@ -70,7 +70,7 @@ class UserCreate(CreateView):
         '''
         user_type = self.request.POST.get('user_type')
         bio = self.request.POST.get('bio')
-        new_Profile = Profile(user = self.object,bio = bio, user_type = user_type)
+        new_Profile = Profile(user = self.object, bio = bio, user_type = user_type)
         new_Profile.save()
         return self.success_url
 
@@ -135,7 +135,7 @@ def change_password(request):
         username = request.user.username
         current_password = request.POST.get('current_password')
 
-        # checks if the current password entered is correct.
+        # returns a user object if the current password entered is correct.
         user = authenticate(request, username = username, password = current_password)
 
         if password1 != password2:
@@ -234,11 +234,11 @@ class QuestionDetailView(DetailView):
 #----HOME PAGE AND SEARCH--------#
 
 @login_required     #decorator
-def main_app_view(request):
+def home(request):
 
     '''Home Page of the website when logged in.
 
-    Displays these blocks of questions:
+       Displays these blocks of questions:
     'Popular'  'questions'  'My Questions'  'New Questions'  'Up Voted'  'Following'
     
     '''
