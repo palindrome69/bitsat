@@ -1,11 +1,12 @@
 # bitsat
 Do you have a question or a doubt about bitsat or BITS in general? This website will help solve your problems.
-This is a forum made using django which is framework in python.
+This is a forum made using django to help solve all your problems.
 
 FOR DEVELOPERS :
 
-*This requires the latest version of Django or version greater than 2.0*
-*It's made using python 3*
+**This requires the latest version of Django or version greater than 2.0**
+**It's made using python 3.**
+**It requires an internet connection to run locally as bootstrap CDN is linked in the templates**
 
 ## Getting started
 You'll need to install the following:
@@ -76,4 +77,4 @@ A login page will appear log in to it user your superuser credentials
 and you'll go to the admin page.
 
 ## AUTHOR
--  https://github.com/palindrom69/
+-  https://github.com/palindrome69/
