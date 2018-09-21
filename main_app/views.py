@@ -138,12 +138,13 @@ def change_password(request):
                 # changes password if authenticated 
                 user.set_password(data['password1'])
                 user.save()
+                # logs in again because password was changed
                 login(request, user)
                 return redirect('main_app:main_app_home')
 
             else:
-                # raises an error
-                form.add_error(None, forms.ValidationError('Enter Correct Password'))   
+                # adds a form error
+                form.add_error('current_password', forms.ValidationError('Enter Correct Password'))   
 
     return render(request, 'main_app/password_change.html',
                  context = {'form':form})        

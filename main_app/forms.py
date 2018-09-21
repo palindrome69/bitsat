@@ -38,11 +38,11 @@ class PasswordChangeForm(forms.Form):
         self.fields['password1'].help_text = """Enter a strong password having
                                                  a combination of alphanumeric 
                                                  characters and special characters"""
+                                                 
         self.fields['password2'].label = 'Confirm Password'
         self.fields['password2'].help_text = 'Re-enter new Password'
 
     def clean(self):
-        print(dir(self))
         cleaned_data = super().clean()
         password1 = cleaned_data['password1']
         password2 = cleaned_data['password2']
