@@ -41,7 +41,7 @@
             <a class="btn btn-dark"  href="/main_app/follow/{{question.id}}/">Follow</a>
             {% endif %}
          </div>
-         <a class="text text-primary font-weight-bold" data-toggle="collapse" href="#answers{{question.id}}" role="button" aria-expanded="false" aria-controls="answers">
+         <a class="text text-primary font-weight-bold" data-toggle="collapse" href="#answers{{question.id}}{{block}}" role="button" aria-expanded="false" aria-controls="answers">
             <div class="container" >
             {% if not question.answers.all %}
             No Answers yet :(
@@ -50,7 +50,7 @@
             {% endif %}
             </a>
             </div>
-            <div class="collapse" id="answers{{question.id}}">
+            <div class="collapse" id="answers{{question.id}}{{block}}">
                <div class="collapse show">
                   {% for answer in question.answers.all|order_by_votes|top_three %}
                   <div class="card">

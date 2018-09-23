@@ -59,7 +59,7 @@
          <p>  </p>
       </div>
       {% for question in questions_by_votes %}
-      {% include "main_app/_questions.html" %}
+      {% include "main_app/_questions.html" with block='by_votes' %}
       {% endfor %}
    </div>
 
@@ -71,7 +71,7 @@
             <p>  </p>
          </div>
          {% for question in userquestions %}
-         {% include "main_app/_questions.html" %}
+         {% include "main_app/_questions.html" with block='myques' %}
          {% endfor %}
    </div>
 
@@ -82,7 +82,7 @@
          <p>  </p>
       </div>
       {% for question in question_list %}
-      {% include "main_app/_questions.html" %}
+      {% include "main_app/_questions.html" with block='new' %}
       {% endfor %}
    </div>
 
@@ -94,7 +94,7 @@
             <p>  </p>
          </div>
          {% for question in user|following_questions %}
-         {% include "main_app/_questions.html" %}
+         {% include "main_app/_questions.html" with block='follow' %}
          {% endfor %}
 
    </div>
@@ -107,7 +107,7 @@
             <p>  </p>
          </div>
          {% for question in user|upvoted_questions %}
-         {% include "main_app/_questions.html" %}
+         {% include "main_app/_questions.html" with block='upvote' %}
          {% endfor %}
    </div>
 

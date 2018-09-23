@@ -30,26 +30,26 @@ def vote_count(question):
     return "{} Up Votes , {} Down Votes ".format(upvotes, downvotes)
 
 @register.filter(name='check_voted')   #decorator
-def check_voted(question, user):
+def check_voted(model, user):
     '''checks if the user
-       has voted on this question or not
+       has voted on this question/answer or not
     
     '''
     flag = 0
-    for vote in question.votes.all():
+    for vote in model.votes.all():
         if vote.user.user == user:
             flag = vote.type
             break
     return flag
 
 @register.filter(name='opp_vote')
-def opp_vote(question, user):
+def opp_vote(model, user):
     '''returns the opposite of the vote
-       by the user on the question.
+       by the user on the question/answer.
 
     '''
     profile = user.profile
-    vote = question.votes.filter(user = profile)[0]
+    vote = model.votes.filter(user = profile)[0]
     if vote.type == "Upvote":
         return "Downvote"
     else :
