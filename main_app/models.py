@@ -144,11 +144,11 @@ class Vote(models.Model):
     type = models.CharField(max_length = 50, blank = False, choices = VOTE_TYPES)
 
     question = models.ForeignKey(Question,on_delete = models.CASCADE,
-                                 related_name = 'votes', null = True)
+                                 related_name = 'votes', default = None)
 
-    answer = models.ForeignKey(Answer, on_delete = models.CASCADE, related_name = 'votes', null = True)
 
-    user = models.ForeignKey(Profile, models.CASCADE,
+
+    user = models.ForeignKey(Profile,on_delete = models.CASCADE,
                              related_name = 'votes')
 
     class Meta:
@@ -163,3 +163,29 @@ class Vote(models.Model):
 
     def __str__(self):
         return  self.type + " " + self.user.user.username
+
+class VoteAns(models.Model):
+    '''model for votes to an answer
+    '''
+    # List of tuple with type of votes
+    VOTE_TYPES = [('Upvote', 'Upvote'), ('Downvote', 'Downvote')]
+
+    type = models.CharField(max_length = 50, blank = False, choices = VOTE_TYPES)
+
+    answer = models.ForeignKey(Answer,on_delete = models.CASCADE,
+                                 related_name = 'votes', default = None)
+
+
+
+    user = models.ForeignKey(Profile,on_delete =  models.CASCADE,
+                             related_name = 'ans_votes')
+
+    class Meta:
+        '''Meta Classes helps adding metadata to the model.
+
+           For more information on Meta see :
+           https://docs.djangoproject.com/en/2.1/topics/db/models/#meta-options
+        
+        '''
+        # Adds a unique constraint on the fields.
+        unique_together = (('answer','user', 'type'),)

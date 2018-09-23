@@ -169,22 +169,17 @@ class DeleteQuestion(DeleteView):
     success_url = reverse_lazy('main_app:main_app_home')
     # TODO -
     #    Remove the confirmation page instead add a popup to confirm
-
-class DeleteAnswer(DeleteView):
-    '''A view that displays a confirmation page and deletes an existing object.
+@login_required
+def delete_answer(request, **kwargs):
+    '''deletes the answer and returns to
+       the last page
+    '''   
+    answer_id = kwargs['pk']
+    answer = get_object_or_404(Answer,id = answer_id)
+    answer.delete()
     
-       The given object will only be deleted if the request method is POST.
-       If this view is fetched via GET, it will display a POPUP to confirm
-       deletion.
-    '''
-    model = Answer
-    def get_success_url(self):
-        
-        # ID of the question whose answer is deleted
-        question_id = self.object.question.id
-
-        return reverse_lazy('main_app:question_detail',
-                            kwargs = {'pk':question_id})
+    last_page = request.META.get('HTTP_REFERER')
+    return redirect(last_page)
 
 class QuestionDetailView(DetailView):
     '''Inherits from DetailView class.
@@ -418,11 +413,11 @@ def vote_answer(request, **kwargs):
     profile = request.user.profile
 
     # will be an empty queryset if not voted before else will have just one object
-    previously_voted = Vote.objects.filter(answer = answer, user = profile)
+    previously_voted = VoteAns.objects.filter(answer = answer, user = profile)
 
     if not previously_voted:
         # if no previous vote, a new vote object will be created
-        new_vote = Vote(answer = answer, user = profile, type = vote_type)
+        new_vote = VoteAns(answer = answer, user = profile, type = vote_type)
         new_vote.save()
     else:
         previous_vote = previously_voted[0]

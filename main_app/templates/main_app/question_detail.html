@@ -98,12 +98,12 @@
                                    </button>
                                  </div>
                                  <div class="modal-body">
-                                   <form class="form" method="post" action="/main_app/answer/delete/{{answer.id}}/">
-                                     {% csrf_token %}
+                                   
+    
                                      <h4>{{answer.answer}}</h4>
-                                     <input type="submit" class="btn btn-danger" name="" value="Delete">
+                                     <a href="/main_app/delete/answer/{{answer.id}}/"><button class="btn btn-danger"> Delete</button></a>
                                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                   </form>
+                                   
                                  </div>
 
                                </div>
