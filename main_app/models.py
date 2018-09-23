@@ -73,6 +73,8 @@ class Answer(models.Model):
     # Date when answered.
     pub_date = models.DateTimeField(blank=False)
 
+    validity = models.IntegerField(default = 0, blank = False)
+
     def __str__(self):
         return self.answer
 
@@ -142,7 +144,10 @@ class Vote(models.Model):
     type = models.CharField(max_length = 50, blank = False, choices = VOTE_TYPES)
 
     question = models.ForeignKey(Question,on_delete = models.CASCADE,
-                                 related_name = 'votes')
+                                 related_name = 'votes', null = True)
+
+    answer = models.ForeignKey(Answer, on_delete = models.CASCADE, related_name = 'votes', null = True)
+
     user = models.ForeignKey(Profile, models.CASCADE,
                              related_name = 'votes')
 

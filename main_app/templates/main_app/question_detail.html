@@ -78,7 +78,7 @@
             </a>
             <div class="collapse" id="answers">
                <div class="collapse show">
-                  {% for answer in answerlist %}
+                  {% for answer in answerlist|order_by_votes %}
                   <div class="card">
 
                      <div class="card-body">
@@ -118,7 +118,19 @@
                               <p class="text text-muted"> {{answer.author.user_type | title }} <a href="/main_app/user/{{answer.author.user.id}}"> See Profile </a></p>
                            </div>
                         </div>
-                        <p class="card-text">{{ answer.answer }}<small class="text-muted text-right"> {{answer.pub_date | naturaltime }}</small></p>
+                        <p class="card-text">{{ answer.answer }}<small class="text-muted text-right"> {{answer.pub_date | naturaltime }}</small>
+                          {% if  answer|check_voted:user  %}
+                          {% if answer|opp_vote:user == 'Upvote' %}
+                          <a class="btn btn-success" href="/main_app/answer/{{answer|opp_vote:user}}/{{answer.id}}/">{{answer|opp_vote:user}}</a>
+                          {% else %}
+                          <a class="btn btn-danger" href="/main_app/answer/{{answer|opp_vote:user}}/{{answer.id}}/">{{answer|opp_vote:user}}</a>
+                          {% endif %}
+                          {% else %}
+                          <a class="btn btn-success" href="/main_app/answer/Upvote/{{answer.id}}/">Up Vote</a>
+                          <a class="btn btn-danger" href="/main_app/answer/Downvote/{{answer.id}}/">Down Vote</a>
+                          {% endif %}
+                        
+                        </p>
                      </div>
                   </div>
                   {% endfor %}

@@ -55,17 +55,6 @@ def opp_vote(question, user):
     else :
         return "Upvote"
 
-@register.filter(name = 'first_answer')
-def first_answer(question):
-    '''returns the first answer to the question if there, else
-       returns a string saying no answers.
-       
-    '''
-    if question.answers.all():
-        return question.answers.all()[0].answer
-    else:
-        return "***No Answers Yet***"
-
 @register.filter(name = 'upvoted_questions')
 def upvoted_questions(user):
     '''returns list of questions upvoted
@@ -73,8 +62,11 @@ def upvoted_questions(user):
 
     '''   
     profile = user.profile
-    votes = Vote.objects.filter(user = profile, type = 'Upvote')
-    questions = [vote.question for vote in votes]
+    questions = []
+    votes = Vote.objects.filter(user = profile, type = 'Upvote',)
+    for vote in votes:
+        if vote.question != None:
+            questions.append(vote.question)
     return questions
 
 @register.filter(name = 'following_questions')
@@ -115,3 +107,26 @@ def is_viewed(notifs):
     viewed_notifs.reverse()
 
     return viewed_notifs
+
+@register.filter(name = 'order_by_votes')
+def order_by_votes(answers):
+    '''returns answers by decreasing
+       order of valididty
+    '''
+    return answers.order_by('-validity')
+
+@register.filter(name = 'top_voted')
+def top_voted(answers):
+    '''returns answer with highest validity'''
+    if answers:
+        sorted_ans = order_by_votes(answers)
+        return sorted_ans[0]
+    else :
+        return "***NO ANSWERS***"    
+
+@register.filter('top_three')
+def top_three(answers):
+    if len(answers)>3:
+        return answers[:3]
+    else:
+        return answers        

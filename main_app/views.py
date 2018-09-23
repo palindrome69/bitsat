@@ -379,7 +379,7 @@ def unfollow(request, **kwargs):
 #------VOTE------#
 
 @login_required     # decorator
-def vote(request, **kwargs):
+def vote_question(request, **kwargs):
     '''handler when a user votes on a question'''
 
     question_id = kwargs['pk']
@@ -407,3 +407,34 @@ def vote(request, **kwargs):
 
     last_page = request.META.get('HTTP_REFERER')
     return redirect(last_page)
+
+@login_required     # decorator
+def vote_answer(request, **kwargs):
+    '''handler when a user votes on an answer'''
+
+    answer_id = kwargs['pk']
+    vote_type = kwargs['type']
+    answer = get_object_or_404(Answer, id = answer_id)
+    profile = request.user.profile
+
+    # will be an empty queryset if not voted before else will have just one object
+    previously_voted = Vote.objects.filter(answer = answer, user = profile)
+
+    if not previously_voted:
+        # if no previous vote, a new vote object will be created
+        new_vote = Vote(answer = answer, user = profile, type = vote_type)
+        new_vote.save()
+    else:
+        previous_vote = previously_voted[0]
+        # previous vote object is updated
+        previous_vote.type = vote_type
+        previous_vote.save()
+
+    # updates the difference between upvotes and downvotes
+    answer.validity = (len(answer.votes.filter(type = 'Upvote')) -
+                         len(answer.votes.filter(type = 'Downvote')))
+    answer.save()
+
+    last_page = request.META.get('HTTP_REFERER')
+    return redirect(last_page)
+

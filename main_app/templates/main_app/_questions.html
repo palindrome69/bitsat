@@ -24,7 +24,7 @@
                   <p class="text-dark"> Q : {{ question.question }}</p>
                </a>
             </h4>
-            <h5 class="text text-muted">A : {{question | first_answer }}</h5>
+            <h5 class="text text-muted">A : {{question.answers.all | top_voted }}</h5>
             {% if  question|check_voted:user  %}
             {% if question|opp_vote:user == 'Upvote' %}
             <a class="btn btn-success" href="/main_app/question/{{question|opp_vote:user}}/{{question.id}}/">{{question|opp_vote:user}}</a>
@@ -41,6 +41,75 @@
             <a class="btn btn-dark"  href="/main_app/follow/{{question.id}}/">Follow</a>
             {% endif %}
          </div>
+         <a class="text text-primary font-weight-bold" data-toggle="collapse" href="#answers{{question.id}}" role="button" aria-expanded="false" aria-controls="answers">
+            <div class="container" >
+            {% if not question.answers.all %}
+            No Answers yet :(
+            {% else %}
+            Top Answers
+            {% endif %}
+            </a>
+            </div>
+            <div class="collapse" id="answers{{question.id}}">
+               <div class="collapse show">
+                  {% for answer in question.answers.all|order_by_votes|top_three %}
+                  <div class="card">
+
+                     <div class="card-body">
+                        <h6 class="card-subtitle mb-2 text-dark"><a class="text text-dark font-weight-bold" data-toggle="collapse" href="#D{{answer.id}}" role="button" aria-expanded="false" aria-controls="{{answer.id}}r"> {{ answer.author.user.first_name }} {{ answer.author.user.last_name }}</a>
+                          {% if answer.author.user == user %}
+                          <button type="button" data-toggle="modal" data-target="#deleteans{{answer.id}}" class="close" aria-label="Close">
+                          <span aria-hidden="true"><a >&times;</a></span>
+                          </button>
+
+                           <div class="modal fade" id="deleteans{{answer.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteans" aria-hidden="true">
+                             <div class="modal-dialog" role="document">
+                               <div class="modal-content">
+                                 <div class="modal-header">
+                                   <h5 class="modal-title" id="ModalLabel">Are you sure you want to delete this answer</h5>
+                                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                     <span aria-hidden="true">&times;</span>
+                                   </button>
+                                 </div>
+                                 <div class="modal-body">
+                                   <form class="form" method="post" action="/main_app/answer/delete/{{answer.id}}/">
+                                     {% csrf_token %}
+                                     <h4>{{answer.answer}}</h4>
+                                     <input type="submit" class="btn btn-danger" name="" value="Delete">
+                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                   </form>
+                                 </div>
+
+                               </div>
+                             </div>
+                           </div>
+
+
+                         {% endif %}  
+                     </h6>
+                        <div class="collapse" id="D{{answer.id}}">
+                           <div class="collapse show">
+                              <p class="text text-muted"> {{answer.author.user_type | title }} <a href="/main_app/user/{{answer.author.user.id}}"> See Profile </a></p>
+                           </div>
+                        </div>
+                        <p class="card-text">{{ answer.answer }}<small class="text-muted text-right"> {{answer.pub_date | naturaltime }}</small>
+                          {% if  answer|check_voted:user  %}
+                          {% if answer|opp_vote:user == 'Upvote' %}
+                          <a class="btn btn-success" href="/main_app/answer/{{answer|opp_vote:user}}/{{answer.id}}/">{{answer|opp_vote:user}}</a>
+                          {% else %}
+                          <a class="btn btn-danger" href="/main_app/answer/{{answer|opp_vote:user}}/{{answer.id}}/">{{answer|opp_vote:user}}</a>
+                          {% endif %}
+                          {% else %}
+                          <a class="btn btn-success" href="/main_app/answer/Upvote/{{answer.id}}/">Up Vote</a>
+                          <a class="btn btn-danger" href="/main_app/answer/Downvote/{{answer.id}}/">Down Vote</a>
+                          {% endif %}
+                        
+                        </p>
+                     </div>
+                  </div>
+                  {% endfor %}
+               </div>
+            </div>
          <div class="card-footer text-muted">
             <div class="row">
                <div class="col">
