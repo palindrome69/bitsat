@@ -58,11 +58,11 @@
                      <div class="card-body">
                         <h6 class="card-subtitle mb-2 text-dark"><a class="text text-dark font-weight-bold" data-toggle="collapse" href="#D{{answer.id}}" role="button" aria-expanded="false" aria-controls="{{answer.id}}r"> {{ answer.author.user.first_name }} {{ answer.author.user.last_name }}</a>
                           {% if answer.author.user == user %}
-                          <button type="button" data-toggle="modal" data-target="#deleteans{{answer.id}}" class="close" aria-label="Close">
+                          <button type="button" data-toggle="modal" data-target="#deleteans{{answer.id}}{{block}}" class="close" aria-label="Close">
                           <span aria-hidden="true"><a >&times;</a></span>
                           </button>
 
-                           <div class="modal fade" id="deleteans{{answer.id}}" tabindex="-1" role="dialog" aria-labelledby="deleteans" aria-hidden="true">
+                           <div class="modal fade" id="deleteans{{answer.id}}{{block}}" tabindex="-1" role="dialog" aria-labelledby="deleteans" aria-hidden="true">
                              <div class="modal-dialog" role="document">
                                <div class="modal-content">
                                  <div class="modal-header">
