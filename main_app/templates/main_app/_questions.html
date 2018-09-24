@@ -56,7 +56,7 @@
                   <div class="card">
 
                      <div class="card-body">
-                        <h6 class="card-subtitle mb-2 text-dark"><a class="text text-dark font-weight-bold" data-toggle="collapse" href="#D{{answer.id}}" role="button" aria-expanded="false" aria-controls="{{answer.id}}r"> {{ answer.author.user.first_name }} {{ answer.author.user.last_name }}</a>
+                        <h6 class="card-subtitle mb-2 text-dark"><a class="text text-dark font-weight-bold" data-toggle="collapse" href="#D{{answer.id}}{{block}}" role="button" aria-expanded="false" aria-controls="{{answer.id}}r"> {{ answer.author.user.first_name }} {{ answer.author.user.last_name }}</a>
                           {% if answer.author.user == user %}
                           <button type="button" data-toggle="modal" data-target="#deleteans{{answer.id}}{{block}}" class="close" aria-label="Close">
                           <span aria-hidden="true"><a >&times;</a></span>
@@ -84,7 +84,7 @@
 
                          {% endif %}  
                      </h6>
-                        <div class="collapse" id="D{{answer.id}}">
+                        <div class="collapse" id="D{{answer.id}}{{block}}">
                            <div class="collapse show">
                               <p class="text text-muted"> {{answer.author.user_type | title }} <a href="/main_app/user/{{answer.author.user.id}}"> See Profile </a></p>
                            </div>
