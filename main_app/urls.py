@@ -12,10 +12,12 @@ from django.contrib.auth.decorators import login_required
 # name used in reverse lookups
 app_name = 'main_app'
 
+
 urlpatterns = [
 
-    path('home/', home, name = 'main_app_home'),
-    path('question/<int:pk>/', login_required(QuestionDetailView.as_view()), name = 'question_detail'),
+    path('home/', home, name='main_app_home'),
+    path('question/<int:pk>/',
+         login_required(QuestionDetailView.as_view()), name='question_detail'),
     path('answer/<int:pk>/', answer),
     path('question/delete/<int:pk>/', login_required(DeleteQuestion.as_view()),),
     path('question/<type>/<int:pk>/', vote_question),
@@ -25,7 +27,8 @@ urlpatterns = [
     path('user/<int:pk>/', login_required(ProfileView.as_view())),
     path('user/edit/<int:pk>/', ProfileEdit.as_view()),
     path('delete/answer/<int:pk>/', delete_answer),
-    path('password/',change_password),
-    path('search/',search),
-    
+    path('password/', change_password),
+    path('search/', search),
+    path('api/notif/', notif_api),
+
 ]

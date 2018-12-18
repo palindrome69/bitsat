@@ -5,13 +5,14 @@ from django.views.generic import (ListView, DetailView, CreateView,
 from django.contrib.auth.views import LoginView, LogoutView
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.utils import timezone
 from main_app.forms import *
 from main_app.models import *
 from django import forms
+from main_app.serializers import *
 
 '''ALL VIEWS TO THIS APP ARE DEFINED HERE.
 
@@ -433,3 +434,18 @@ def vote_answer(request, **kwargs):
     last_page = request.META.get('HTTP_REFERER')
     return redirect(last_page)
 
+def notif_api(request):
+    
+    if request.user:
+        notifications = request.user.profile.notifications.filter(viewed=False)
+        serializer = NotifSerializer(notifications, many=True)
+
+        for notif in serializer.data:
+            notif['by'] = Profile.objects.get(id=notif['by']).user.username
+            notif['question'] = Answer.objects.get(id=notif['answer']).question.question
+            notif['question_url']  = 'question/' + str(Answer.objects.get(id=notif['answer']).question.id)
+            print(notif)
+
+        return JsonResponse(serializer.data, safe=False)
+    else:
+        return JsonResponse({"message":"User not authenticated"})

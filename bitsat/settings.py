@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'bootstrap4',
     'bootstrap3',
     'django.contrib.humanize',
+    'rest_framework'
 ]
 
 MIDDLEWARE = [
@@ -55,6 +56,12 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'bitsat.urls'
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
 
 TEMPLATES = [
     {
@@ -91,7 +98,7 @@ DATABASES = {
 
 PASSWORD_HASHERS = [
     'django.contrib.auth.hashers.Argon2PasswordHasher',
-    #'django.contrib.auth.hashers.BcryptSHA256PasswordHasher',
+    # 'django.contrib.auth.hashers.BcryptSHA256PasswordHasher',
 
 ]
 
@@ -130,7 +137,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.0/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_DIR = os.path.join(BASE_DIR,'static')
+STATIC_DIR = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [STATIC_DIR, ]
 
 # Redirects to this URL when Logged in Successfully
@@ -140,4 +147,4 @@ LOGIN_URL = '/home/'
 
 # Media files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL  = '/media/'
+MEDIA_URL = '/media/'
